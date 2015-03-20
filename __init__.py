@@ -1,4 +1,5 @@
-from flask import Flask, session, flash, request, jsonify, url_for, render_template, redirect
+from flask import Flask, flash, request, jsonify, url_for, render_template, redirect
+
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bootstrap import Bootstrap
 from functools import wraps
@@ -6,8 +7,13 @@ from datetime import datetime
 from flask.ext.mail import Mail
 from flask.ext.moment import Moment
 from flask.ext.login import LoginManager
-from config import config
 
+from flask.ext.wtf import Form
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import Required, Email,Length
+from flask import make_response
+from functools import update_wrapper
+from datetime import datetime 
 
 
 app = Flask (__name__, static_url_path='/home/wa/Documents/test3/static')
@@ -16,8 +22,31 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 db = SQLAlchemy(app)
 
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:aaggss@localhost/dreadger'
 app.secret_key = 'my secret key is this'
+
+
+logInStatus =dict()
+logInStatus['logged_in'] = False
+
+def nocache(view):
+    @wraps(view)
+    def no_cache(*args, **kwargs):
+        response = make_response(view(*args, **kwargs))
+        response.headers['Last-Modified'] = datetime.now()
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+        return response
+    return update_wrapper(no_cache, view) 
+
+class LoginForm(Form):
+    email = StringField('Username', validators=[Required()])
+    password = PasswordField('Password', validators=[Required()])
+    
+    submit = SubmitField('Log In')
+
 
 class dieselLevel(db.Model):
 	__tablename__ = 'dieselLevel'
@@ -47,16 +76,30 @@ class user(db.Model):
 def login_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
-		if session['logged_in']:
+		if logInStatus['logged_in']:
 			return f(*args, **kwargs)
 		else:
 			flash('You need to login first')
 			return redirect(url_for('login'))
 	return decorated_function
 
-
-
 @app.route('/', methods=['GET', 'POST'])
+def login():
+	name = None
+	form = LoginForm()
+	if form.validate_on_submit():
+		logInStatus['logged_in'] = True
+                if form.email.data != 'admin' or form.password.data != 'admin':
+		    form.email.data = ' '
+		    flash('The username or password you entered is incorrect.')
+                    return render_template('login.html',form=form)
+		return redirect(url_for('home'))
+                
+		#name = form.name.data
+		#form.name.data = ''
+	return render_template('login.html', form=form)
+
+"""@app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
@@ -66,7 +109,7 @@ def login():
             session['logged_in'] = True
             flash('You have logged in')
             return redirect(url_for('home'))
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error)"""
 
 
 """@app.route('/', methods=['GET', 'POST'])
@@ -92,6 +135,7 @@ def test():
 
 
 @app.route ("/index", methods=['GET'])
+@nocache
 @login_required
 def home():
 	results = dieselLevel.query.order_by(dieselLevel.mTime.desc()).all()
@@ -100,9 +144,8 @@ def home():
 
 	
 @app.route('/logout')
-@login_required
 def logout():
-    session.pop('logged_in', None)
+    logInStatus['logged_in']=False
     flash('You were just logged out')
     return redirect(url_for('login'))
 
