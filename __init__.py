@@ -3,12 +3,17 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bootstrap import Bootstrap
 from functools import wraps
 from datetime import datetime
+from flask.ext.mail import Mail
+from flask.ext.moment import Moment
+from flask.ext.login import LoginManager
+from config import config
+
 
 
 app = Flask (__name__, static_url_path='/home/wa/Documents/test3/static')
 
 bootstrap = Bootstrap(app)
-
+moment = Moment(app)
 db = SQLAlchemy(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:aaggss@localhost/dreadger'
