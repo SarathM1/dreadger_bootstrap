@@ -9,7 +9,7 @@ def main():
 	com2p = 'git status'
 	com3c = 'git add --all'
 	com4c = 'git commit -m "Done"'
-	com5c = 'git push ssh master'
+	com5c = 'git push ssh 2march20'
 
 
 	p1 = c(com1c.split())
