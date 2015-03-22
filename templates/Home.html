@@ -4,53 +4,58 @@
 
 
 
-<!--<div class="btn">
-<!--<a href="{{ url_for('logs') }}">Trend / Report</a>
+<div class="btn">
+<a href="{{ url_for('logs') }}">Trend / Report</a>
 </div><br/><br/><br/>
-<div style="padding-left:150px;">
- <table>
+<div class="container">
+<div class="table-responsive" >
+ <table class="table table-bordered">
   <thead>
     <tr>
-      <th width="130" height="20">Sl No:</th>
-      <th width="130" height="20">Date / Time</th>
-      <th width="130" height="20">Level</th>
+      <th width="10" height="20">Sl No:</th>
+      <th width="30" height="20">Date / Time</th>
+      <th width="20" height="20">Level</th>
     </tr>
   </thead>
     <tbody>
 
       <tr>
-        <th width="130" height="20">1</th>
-        <th width="130" height="20">{#{{ results[0].mTime }}#}</th>
-        <th width="130" height="20">{#{{ results[0].level }}#}</th> 
+        <th >1</th>
+        <th >{{ results[0].mTime }}</th>
+        <th >{{ results[0].level }}</th> 
       </tr>
 	
     </tbody>
   </table>
-</div>-->
+  </div>
+</div>
 
 <div class="page-header">
   <h2>Logged Values</h2>
-  <table>
-    <thead>
-      <tr>
-    		<th width="117" height="20">Date / Time</th>
-    		<th width="117" height="20">Level</th>
-    	</tr>
-    </thead>
-    <tbody>
-	{%if results != None %}
-      {% for result in results %}
-      <tr>
-        <th width="117" height="20">{{ result.mTime }}</th>
-        <th width="117" height="20">{{ result.level }}</th>
-      </tr>
-      {% endfor %}
-	{% endif %}
-    </tbody>
-  </table>
+  <div class="container">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+        		<th width="117" height="20">Date / Time</th>
+        		<th width="117" height="20">Level</th>
+        	</tr>
+        </thead>
+        <tbody>
+    	{%if results != None %}
+          {% for result in results %}
+          <tr>
+            <th width="117" height="20">{{ result.mTime }}</th>
+            <th width="117" height="20">{{ result.level }}</th>
+          </tr>
+          {% endfor %}
+    	{% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-</div>
-</div>
+
 
 {% endblock %}
