@@ -15,12 +15,26 @@ from flask import make_response
 from functools import update_wrapper
 from datetime import datetime 
 
+#from flask.ext.mysql import MySQL
+ 
+#mysql = MySQL()
+#app = Flask(__name__)
+
 
 app = Flask (__name__, static_url_path='/home/wa/Documents/test3/static')
+
+"""app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'aaggss'
+app.config['MYSQL_DATABASE_DB'] = 'dreadger'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+mysql.init_app(app)"""
 
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 db = SQLAlchemy(app)
+#cursor = mysql.get_db().cursor()
+
+
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:aaggss@localhost/dreadger'
@@ -138,8 +152,12 @@ def test():
 @nocache
 @login_required
 def home():
+	#cursor.execute("SELECT * FROM dieselLevel ORDER BY mTime DESC")
+	#results = cursor.fetchall()
 	results = dieselLevel.query.order_by(dieselLevel.mTime.desc()).all()
-	return render_template('Home.html',results=results)	
+	
+	return render_template('Home.html',results=results)
+
 	#return render_template('Home.html',results=results)	
 
 	
