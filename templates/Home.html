@@ -9,6 +9,7 @@
 </div><br/><br/><br/>
 <div class="container">
 <div class="table-responsive" >
+{% if  results %}
  <table class="table table-bordered">
   <thead>
     <tr>
@@ -21,8 +22,10 @@
 
       <tr>
         <th >1</th>
+
         <th >{{ results[0].mTime }}</th>
         <th >{{ results[0].level }}</th> 
+
       </tr>
 	
     </tbody>
@@ -52,6 +55,9 @@
     	{% endif %}
         </tbody>
       </table>
+{% else %}
+<p><b>The table is empty</b></p>
+{%endif%}
     </div>
   </div>
 </div>
