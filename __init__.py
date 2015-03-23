@@ -248,11 +248,15 @@ def filterData():
 			except ValueError:
 				flash("Error!! Use format: %Y-%m-%d %H:%M:%S")
 
-		toTime = datetime.strptime(toTime, "%Y-%m-%d %H:%M:%S")
-		#print toTime,type(toTime)
 
-		#results = dieselLevel.query.order_by(dieselLevel.mTime.desc()).all()
-		results = dieselLevel.query.filter(dieselLevel.mTime <= toTime).filter(dieselLevel.mTime >= fromTime).order_by(dieselLevel.mTime.desc()).all()
+		try:		
+			toTime = datetime.strptime(toTime, "%Y-%m-%d %H:%M:%S")
+			results = dieselLevel.query.filter(dieselLevel.mTime <= toTime).filter(dieselLevel.mTime >= fromTime).order_by(dieselLevel.mTime.desc()).all()
+		except Exception as e:
+			flash("Error:"+str(e))
+			flash("Please check if the date exists!!")
+			return render_template('filter.html',form=form,results=None)
+
 		return render_template('filter.html',form=form,results=results)
         #form.email.data != 'admin' or form.password.data != 'admin':
 	return render_template('filter.html',form=form,results=None)
