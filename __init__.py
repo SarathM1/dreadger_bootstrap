@@ -9,7 +9,7 @@ from flask.ext.moment import Moment
 from flask.ext.login import LoginManager
 
 from flask.ext.wtf import Form
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, DateField
 from wtforms.validators import Required, Email,Length
 from flask import make_response
 from functools import update_wrapper
@@ -60,6 +60,13 @@ class LoginForm(Form):
     password = PasswordField('Password', validators=[Required()])
     
     submit = SubmitField('Log In')
+
+class filterForm(Form):
+    fromTime = DateField('frmTime', validators=[Required()])
+    toTime = DateField('toTime', validators=[Required()])
+    
+    submit = SubmitField('filter')
+
 
 
 class dieselLevel(db.Model):
@@ -177,6 +184,22 @@ def validate(data):
 def conTime(param):
 	return datetime.strptime(param, '%d/%m/%Y %H:%M')
 
+@app.route('/filter', methods=['GET', 'POST'])
+@login_required
+def filterData():
+	
+	form = filterForm()
+	if form.validate_on_submit():
+		fromTime = form.fromTime.data 
+		toTime = form.toTime.data
+		results = dieselLevel.query.order_by(dieselLevel.mTime.desc()).all()
+		return render_template('filter.html',form=form,results=results)
+        #form.email.data != 'admin' or form.password.data != 'admin':
+	return render_template('filter.html',form=form,results=None)
+            
+	
+	
+	
 
 @app.route('/logs', methods=['GET', 'POST'])
 @login_required
