@@ -44,7 +44,8 @@ class DieselLevel(Base):
 	mTime = Column(DateTime)
 	ip = Column(String(15))
 
-	def __init__(self, device, level, mTime, ip):
+	def __init__(self, id,device, level, mTime, ip):
+		self.id = id
 		self.device = device
 		self.level = level
 		self.mTime = mTime
@@ -63,10 +64,11 @@ return type is a (devicename,level,datetime)
 def parsedata(data):
 	data = data.strip()		# It removes all the newline character from the string
 	data = data.split(';')	# Splits the string at every ';' character
-	device = data[0]	
-	level = int(data[1])
-	time = datetime.strptime( data[2], "%d/%m/%Y %H:%M:%S") # "21/11/06 16:30:40"
-	return (device, level, time)
+	id = int(data[0])
+	device = data[1]	
+	level = int(data[2])
+	time = datetime.strptime( data[3], "%d/%m/%Y %H:%M:%S") # "21/11/06 16:30:40"
+	return (id,device, level, time)
 
 
 ## Main function 
@@ -89,11 +91,12 @@ if __name__ == '__main__':
 	while 1: #infinite loop running to see if packets are coming to the server.
 		data, addr = sock.recvfrom(256) # Recieving 256 bits from the port.
 		try:
-			device, level, time = parsedata(data)
+			id,device, level, time = parsedata(data)
 			ip,port = addr
 			s = session()
-			s.add(DieselLevel(device, level, time, ip))
-			print 'data: '+device,level,time,ip
+
+			s.add(DieselLevel(id,device, level, time, ip))
+			print 'data: '+ str(id),device,str(level),time,ip
 			"""
 			logger.debug ('Data packet recieved')
 			logger.debug('From : %s' %str(addr))
