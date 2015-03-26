@@ -37,12 +37,12 @@ def Main():
     i=1
     while True:
 
-       	message = str(i)+";"+"ABC123;" + str(random.randrange(100, 900, 2))+";" + randomDate("1/1/2008 1:30:00", "1/1/2009 4:50:00", random.random())
+       	message = str(i)+";"+"ABC123;" + str(random.randrange(100, 900, 2))+";" + randomDate("1/1/2007 1:30:00", "1/1/2009 4:50:00", random.random())
         i=i+1
         #print 'random:'+randomDate("1/1/2008 1:30:00", "1/1/2009 4:50:00", random.random())
 	s.sendto(message,server)
 	print 'data sent: ' + message
-       	time.sleep(1)
+       	time.sleep(0.25)
     s.close()
 
 if __name__=='__main__':
