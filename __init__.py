@@ -226,13 +226,18 @@ def filterData():
 			#print 'in except, fromTime= ',fromTime
 		except ValueError:
 			try:
-				fromTime = datetime.strptime(fromTime, "%Y/%m/%d %H:%M:%S")
+				fromTime = datetime.strptime(fromTime, "%Y-%m-%d %H:%M:%S")
 				fromTime = fromTime.strftime("%Y-%m-%d %H:%M:%S")
 				#print 'in except, fromTime= ',fromTime
 			except ValueError:
 				flash("Error!! Use format: %Y-%m-%d %H:%M:%S")
 
-		fromTime = datetime.strptime(fromTime, "%Y-%m-%d %H:%M:%S")
+		try:
+			fromTime = datetime.strptime(fromTime, "%Y-%m-%d %H:%M:%S")
+		except Exception as e:
+			flash("Error:"+str(e))
+			flash("Please check if the date exists!!")
+			return render_template('filter.html',form=form,results=None)
 		#print fromTime,type(fromTime)
 		#----------------------------------------------------------------------------------#
 		toTime = form.toTime.data
@@ -242,7 +247,7 @@ def filterData():
 			#print 'in except, fromTime= ',toTime
 		except ValueError:
 			try:
-				toTime = datetime.strptime(toTime, "%Y/%m/%d %H:%M:%S")
+				toTime = datetime.strptime(toTime, "%Y-%m-%d %H:%M:%S")
 				toTime = toTime.strftime("%Y-%m-%d %H:%M:%S")
 				#print 'in except, fromTime= ',fromTime
 			except ValueError:
