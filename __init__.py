@@ -172,24 +172,25 @@ def login():
         return redirect(url_for('home'))
     return render_template('Login.html',error=error)
 """
-@app.route('/user', methods=['GET', 'POST'])
-def test():
-    return render_template('user.html')
+def loop():
+	results = dieselLevel.query.order_by(dieselLevel.mTime.desc()).all()
+	return render_template('Home.html',results=results)
 
 
 @app.route ("/index", methods=['GET'])
 @nocache
 @login_required
 def home():
-	#cursor.execute("SELECT * FROM dieselLevel ORDER BY mTime DESC")
-	#results = cursor.fetchall()
+
 	results = None
 	results = dieselLevel.query.order_by(dieselLevel.mTime.desc()).all()
 	if not results:
 		results=None
+	while True:
+		page=loop()
+		return page
+		time.sleep(5)
 	return render_template('Home.html',results=results)
-
-	#return render_template('Home.html',results=results)	
 
 	
 @app.route('/logout')
